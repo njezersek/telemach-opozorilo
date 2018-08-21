@@ -67,5 +67,15 @@ echo "</pre><hr>";*/
 $body = curlGet('GET', 'https://moj.telemach.si/', 'Cookie: JSESSIONID='.$cookies['JSESSIONID'], '')['body'];
 
 // prikaz pridobljenga bodya
-echo $body;
+/*echo $body;*/
+
+$doc = new DOMDocument();
+libxml_use_internal_errors(true);
+$doc->loadHTML($body);
+$xpath = new DOMXPath($doc);
+$dataList = $xpath->query("//*[contains(@class, 'data-list')]");
+$preostaleMinute = $xpath->query("descendant::*[contains(@class, 'u-pull-left')]", $dataList->item(0))->item(0)->textContent;
+
+// prikaz preostalih minut
+echo $preostaleMinute;
 ?>
