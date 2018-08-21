@@ -42,20 +42,30 @@ function curlGet($method, $destination, $headers, $parameters){
 	return array('header' => $header, 'body' => $body);
 }
 
-
-
+//
+// login request
 $header = curlGet('POST', 'https://moj.telemach.si/prijava/preverba', '', 'username='.$username.'&password='.$password)['header'];
 
-echo "<pre>";
+// header od login requesta
+/*echo "<pre>";
 echo $header;
-echo "<hr>";
+echo "<hr>";*/
 
+// iz headerja sparasaj piškoteke
 preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
 $cookies = array();
 foreach($matches[1] as $item) {
 		parse_str($item, $cookie);
 		$cookies = array_merge($cookies, $cookie);
 }
-var_dump($cookies);
-echo "</pre>";
+
+// prikaz pridobljenih piškotkov
+/*var_dump($cookies);
+echo "</pre><hr>";*/
+
+// dobi html od nadzorne plošče potrala
+$body = curlGet('GET', 'https://moj.telemach.si/', 'Cookie: JSESSIONID='.$cookies['JSESSIONID'], '')['body'];
+
+// prikaz pridobljenga bodya
+echo $body;
 ?>
