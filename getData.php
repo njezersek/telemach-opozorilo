@@ -5,6 +5,8 @@ require "userInfo.php";
 /* userInfo.php
 $username = "**********";
 $password = "**********";
+$email = "email@uprabnika.com";
+$prag = 10; 
 */
 
 function curlGet($method, $destination, $headers, $parameters){
@@ -78,4 +80,21 @@ $preostaleMinute = $xpath->query("descendant::*[contains(@class, 'u-pull-left')]
 
 // prikaz preostalih minut
 echo $preostaleMinute;
+
+
+// če je minut manj kot 10 pošlji mail
+if(intval($preostaleMinute) <= $prag){
+	$headers    = array();
+	$headers[]  = 'MIME-Version: 1.0';
+	$headers[]  = 'Content-Type: text/html; charset=UTF-8'; //če nočeš html text/plain
+	$headers[]  = 'X-Mailer: PHP/' . phpversion();
+	$headers[]  = 'From: obvestila@jezersek.eu.org';
+
+	$recipient = $email;
+	$subject = '=?utf-8?B?'.base64_encode("Obvestilo: imaš še ".$preostaleMinute." minut").'?=';
+	$body = "";
+
+	mail($recipient, $subject, $body, implode("\r\n", $headers));
+	echo "Mail sent successfuly.";
+}
 ?>
